@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#12253d">
 <title>Lịch làm việc</title>
+<script>
+/* Kích hoạt chế độ ảnh sớm ngay trong head để tránh giật giao diện */
+(function(){
+  try {
+    var q = new URLSearchParams(window.location.search);
+    if(q.has('anh')){
+      document.documentElement.classList.add('anh');
+      if(q.get('nen') === 'sang'){
+        document.documentElement.classList.add('sang');
+      }
+    }
+  } catch(e){}
+})();
+</script>
 <style>
   :root{
     --navy:#12253d; --blue:#2a78d6; --blueL:#e9f1fc;
@@ -158,6 +172,473 @@
   header .sw{margin-left:auto;font-size:11.5px;font-weight:800;background:rgba(255,255,255,.14);
              padding:5px 11px;border-radius:20px;cursor:pointer;border:0;color:#fff;font-family:inherit}
   header .rl{margin-left:0}
+
+  /* ══════════════════════════════════════════════════════════
+     CHẾ ĐỘ ẢNH (GIAI ĐOẠN 3) — TỰ ĐỘNG KÍCH HOẠT KHI ?anh=1
+     ══════════════════════════════════════════════════════════ */
+  html.anh {
+    --anh-nen: #0B1420;
+    --anh-the: #12253d;
+    --anh-ke: #22354d;
+    --anh-chu: #E9EFF6;
+    --anh-phu: #93A6BC;
+    --anh-goi-nen: #38BDF8;
+    --anh-goi-chu: #06202F;
+    --anh-pha-nen: #A78BFA;
+    --anh-pha-chu: #1B1033;
+    --anh-chiet-nen: #34D399;
+    --anh-chiet-chu: #04241A;
+    --anh-tang-ca: #FBBF24;
+    --anh-tang-ca-chu: #2A1A00;
+    --anh-do: #F87171;
+    --anh-do-nen: rgba(248, 113, 113, 0.14);
+    --anh-do-chu: #FCA5A5;
+    --anh-nghi-nen: #1A2A3E;
+    --anh-nghi-chu: #5B6E85;
+    --anh-cn-nen: #0d1b2a;
+    --anh-xanh-la: #34D399;
+    --anh-xanh-la-nen: rgba(52, 211, 153, 0.14);
+  }
+
+  html.anh.sang {
+    --anh-nen: #F4F6F9;
+    --anh-the: #FFFFFF;
+    --anh-ke: #DDE3EA;
+    --anh-chu: #16202B;
+    --anh-phu: #64748B;
+    --anh-goi-nen: #DCEEFB;
+    --anh-goi-chu: #0B72C4;
+    --anh-pha-nen: #EEE6FA;
+    --anh-pha-chu: #6D3FA6;
+    --anh-chiet-nen: #DDF5EC;
+    --anh-chiet-chu: #0B7A57;
+    --anh-tang-ca: #B26A00;
+    --anh-tang-ca-chu: #FFFFFF;
+    --anh-do: #C0392B;
+    --anh-do-nen: rgba(192, 57, 43, 0.1);
+    --anh-do-chu: #C0392B;
+    --anh-nghi-nen: #F1F5F9;
+    --anh-nghi-chu: #94A3B8;
+    --anh-cn-nen: #F8FAFC;
+    --anh-xanh-la: #0B7A57;
+    --anh-xanh-la-nen: #DDF5EC;
+  }
+
+  html.anh body {
+    padding-bottom: 0 !important;
+    background: var(--anh-nen) !important;
+    color: var(--anh-chu);
+    font-family: system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+  }
+
+  html.anh * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html.anh header,
+  html.anh .bar,
+  html.anh .sendbar,
+  html.anh .pane,
+  html.anh #gate,
+  html.anh .toast {
+    display: none !important;
+  }
+
+  html.anh .wrap {
+    max-width: none !important;
+  }
+
+  #anh {
+    display: none;
+    width: 540px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 16px 14px 14px 14px;
+    background: var(--anh-nen);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+
+  html.anh #anh {
+    display: block;
+  }
+
+  .anh-thoat {
+    display: none;
+  }
+
+  html.anh .anh-thoat {
+    display: block;
+    text-align: center;
+    margin: 14px auto 28px;
+  }
+
+  html.anh .anh-thoat a {
+    color: var(--anh-phu);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Bố cục Dải 1: Đầu ảnh */
+  .anh-dai1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+  .anh-dai1-trai {
+    flex: 1;
+  }
+  .anh-tieu-de {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--anh-chu);
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+  }
+  .anh-phu-de {
+    font-size: 12.5px;
+    color: var(--anh-phu);
+    margin-top: 3px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .anh-dai1-phai {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .anh-badge-tc {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 3px;
+    background: var(--anh-the);
+    border: 2px solid var(--anh-tang-ca);
+    color: var(--anh-tang-ca);
+    padding: 4px 9px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .anh-so-tc {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .anh-ds-tc {
+    font-size: 11px;
+    color: var(--anh-phu);
+    margin-top: 3px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  /* Bố cục Dải 2: Chú thích 3 việc */
+  .anh-dai2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--anh-phu);
+    background: var(--anh-the);
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 2px solid var(--anh-ke);
+  }
+  .anh-ct-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .anh-cham-goi { color: var(--anh-goi-nen); font-size: 13px; }
+  .anh-cham-pha { color: var(--anh-pha-nen); font-size: 13px; }
+  .anh-cham-chiet { color: var(--anh-chiet-nen); font-size: 13px; }
+  .anh-cham-tc { color: var(--anh-tang-ca); font-size: 13px; font-weight: 800; }
+
+  /* Bố cục Dải 3: Bảng lịch */
+  .anh-bang-wrap {
+    background: var(--anh-the);
+    border: 2px solid var(--anh-ke);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 11px;
+  }
+  .anh-hang-dau {
+    display: grid;
+    grid-template-columns: 76px repeat(7, 1fr);
+    border-bottom: 2px solid var(--anh-ke);
+    background: var(--anh-the);
+  }
+  .anh-cot-ten-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--anh-phu);
+    letter-spacing: 0.5px;
+    border-right: 2px solid var(--anh-ke);
+  }
+  .anh-cot-ngay {
+    text-align: center;
+    padding: 5px 2px;
+    border-right: 2px solid var(--anh-ke);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .anh-cot-ngay:last-child {
+    border-right: 0;
+  }
+  .anh-cot-ngay.anh-cn-cot {
+    background: var(--anh-cn-nen);
+  }
+  .anh-thu {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--anh-chu);
+    line-height: 1.2;
+  }
+  .anh-thu.co-trong {
+    border-bottom: 3px solid var(--anh-do);
+    padding-bottom: 0px;
+    margin-bottom: -1px;
+  }
+  .anh-ngay-thang {
+    font-size: 11px;
+    color: var(--anh-phu);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .anh-cn-gio {
+    font-size: 10px;
+    color: var(--anh-tang-ca);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-top: 1px;
+  }
+
+  .anh-hang {
+    display: grid;
+    grid-template-columns: 76px repeat(7, 1fr);
+    border-bottom: 2px solid var(--anh-ke);
+  }
+  .anh-hang:last-child {
+    border-bottom: 0;
+  }
+  .anh-o-ten {
+    padding: 6px 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: var(--anh-the);
+    border-right: 2px solid var(--anh-ke);
+  }
+  .anh-ten-nv {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--anh-chu);
+    line-height: 1.2;
+  }
+  .anh-vaitro-nv {
+    font-size: 11px;
+    color: var(--anh-phu);
+    font-weight: 600;
+    margin-top: 2px;
+    line-height: 1.2;
+  }
+  .anh-tc-nv {
+    font-size: 11px;
+    color: var(--anh-tang-ca);
+    font-weight: 800;
+    margin-top: 2px;
+    line-height: 1.2;
+  }
+
+  .anh-o-ca {
+    padding: 4px 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+    border-right: 2px solid var(--anh-ke);
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+  .anh-o-ca:last-child {
+    border-right: 0;
+  }
+  .anh-o-ca.anh-cn-cot {
+    background: var(--anh-cn-nen);
+  }
+  .anh-o-ca.anh-o-trong {
+    border: 2px dashed var(--anh-do) !important;
+    background: var(--anh-do-nen) !important;
+    border-radius: 4px;
+    margin: 2px;
+    padding: 2px 1px;
+  }
+
+  /* Chip ca */
+  .anh-chip {
+    height: 34px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: center;
+  }
+  .anh-chip-gio {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .anh-chip-nhan {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    line-height: 1.1;
+    margin-top: 1px;
+  }
+  .anh-chip-goi {
+    background: var(--anh-goi-nen);
+    color: var(--anh-goi-chu);
+  }
+  .anh-chip-pha {
+    background: var(--anh-pha-nen);
+    color: var(--anh-pha-chu);
+  }
+  .anh-chip-chiet {
+    background: var(--anh-chiet-nen);
+    color: var(--anh-chiet-chu);
+  }
+  .anh-chip-tc {
+    border: 3px solid var(--anh-tang-ca) !important;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(251, 191, 36, 0.22) 4px, rgba(251, 191, 36, 0.22) 8px) !important;
+  }
+  html.anh.sang .anh-chip-tc {
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(178, 106, 0, 0.2) 4px, rgba(178, 106, 0, 0.2) 8px) !important;
+  }
+  .anh-chip-tc-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--anh-tang-ca);
+    color: var(--anh-tang-ca-chu);
+    font-size: 9px;
+    font-weight: 900;
+    padding: 1px 3px;
+    border-bottom-left-radius: 4px;
+    line-height: 1;
+  }
+
+  .anh-chip-nghi {
+    height: 34px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--anh-nghi-nen);
+    color: var(--anh-nghi-chu);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    box-sizing: border-box;
+  }
+
+  /* Bố cục Dải 4: Ca trống */
+  .anh-dai4 {
+    margin-bottom: 10px;
+  }
+  .anh-dai4-tieu-de {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--anh-do);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .anh-dai4-danh-sach {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+  .anh-chip-trong {
+    border: 2px dashed var(--anh-do);
+    background: var(--anh-do-nen);
+    color: var(--anh-do-chu);
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .anh-dai4-du {
+    background: var(--anh-xanh-la-nen);
+    color: var(--anh-xanh-la);
+    border: 2px solid var(--anh-xanh-la);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14.5px;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* Bố cục Dải 5: Chân ảnh */
+  .anh-dai5 {
+    text-align: center;
+    font-size: 12px;
+    color: var(--anh-phu);
+    font-weight: 600;
+    line-height: 1.35;
+    padding-top: 2px;
+  }
+
+  /* Thẻ thông báo rỗng / lỗi */
+  .anh-thong-bao {
+    background: var(--anh-the);
+    border: 2px solid var(--anh-ke);
+    border-radius: 12px;
+    padding: 24px 18px;
+    text-align: center;
+  }
+  .anh-thong-bao.anh-loi {
+    border-color: var(--anh-do);
+    background: var(--anh-do-nen);
+  }
+  .anh-thong-bao-t1 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--anh-chu);
+    margin-bottom: 6px;
+  }
+  .anh-thong-bao.anh-loi .anh-thong-bao-t1 {
+    color: var(--anh-do);
+  }
+  .anh-thong-bao-t2 {
+    font-size: 13px;
+    color: var(--anh-phu);
+    font-weight: 600;
+  }
+  .anh-thong-bao.anh-loi .anh-thong-bao-t2 {
+    color: var(--anh-do-chu);
+  }
 </style>
 </head>
 <body>
@@ -234,6 +715,10 @@
 
 </div>
 
+<!-- ══ CHẾ ĐỘ ẢNH (GIAI ĐOẠN 3) — KHUNG CHỤP RỘNG ĐÚNG 540PX ══ -->
+<div id="anh"></div>
+<div class="anh-thoat"><a href="/">← Mở app đăng ký</a></div>
+
 <div class="sendbar hide" id="sendbar"><div class="sendin">
   <div><div class="l">ĐÃ CHỌN</div><div class="v" id="sendv">—</div></div>
   <button id="sendbtn" onclick="guiDangKy()">Gửi</button>
@@ -292,6 +777,121 @@ const DEMO = {
   ]
 };
 
+/* ══════════════════════════════════════════════════════════
+   DỮ LIỆU GIẢ CHẾ ĐỘ ẢNH (MẢNH B KHUNG RỖNG)
+   Cấu trúc khớp 100% action 'anh' backend:
+   - 6 người (Tài, Huy, Khánh, Vi, Thanh, Diễm)
+   - Đủ 3 việc (đóng gói, pha chế, chiết)
+   - Tăng ca 22h: Vi 18h (3h/ngày T2–T7), Khánh 4h (CN)
+   - 3 ca trống: T3, T6, CN
+   ══════════════════════════════════════════════════════════ */
+const MOCK_ANH = {
+  tuan_id: '2026-08-24',
+  tuan: { dau: '24/8', cuoi: '30/8' },
+  ngay: [
+    { k: 'T2', ten: 'Thứ 2', ngay: '24/8', iso: '2026-08-24' },
+    { k: 'T3', ten: 'Thứ 3', ngay: '25/8', iso: '2026-08-25' },
+    { k: 'T4', ten: 'Thứ 4', ngay: '26/8', iso: '2026-08-26' },
+    { k: 'T5', ten: 'Thứ 5', ngay: '27/8', iso: '2026-08-27' },
+    { k: 'T6', ten: 'Thứ 6', ngay: '28/8', iso: '2026-08-28' },
+    { k: 'T7', ten: 'Thứ 7', ngay: '29/8', iso: '2026-08-29' },
+    { k: 'CN', ten: 'Chủ nhật', ngay: '30/8', iso: '2026-08-30', cn: true }
+  ],
+  nguoi: {
+    tai:   { ten: 'Tài',   loai: 'full', vaitro: 'Đóng gói' },
+    huy:   { ten: 'Huy',   loai: 'full', vaitro: 'Đóng gói' },
+    khanh: { ten: 'Khánh', loai: 'full', vaitro: 'Đóng gói' },
+    vi:    { ten: 'Vi',    loai: 'lai',  vaitro: 'Pha chế' },
+    thanh: { ten: 'Thanh', loai: 'part', vaitro: 'Part-time' },
+    diem:  { ten: 'Diễm',  loai: 'part', vaitro: 'Part-time' }
+  },
+  lich: [
+    // T2 (24/8)
+    { iso: '2026-08-24', id: 'tai',   tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'tai',   tu: 12, den: 17, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'huy',   tu: 9,  den: 13, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'huy',   tu: 13, den: 18, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'khanh', tu: 10, den: 14, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'khanh', tu: 14, den: 19, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'vi',    tu: 8,  den: 10, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'vi',    tu: 10, den: 18, viec: 'pha chế',  ot: 0 },
+    { iso: '2026-08-24', id: 'vi',    tu: 18, den: 19, viec: 'pha chế',  ot: 3 },
+    { iso: '2026-08-24', id: 'thanh', tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-24', id: 'diem',  tu: 15, den: 19, viec: 'chiết',    ot: 0 },
+
+    // T3 (25/8) — Tài nghỉ (Ca trống CT1)
+    { iso: '2026-08-25', id: 'huy',   tu: 9,  den: 13, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-25', id: 'huy',   tu: 13, den: 18, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-25', id: 'khanh', tu: 10, den: 14, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-25', id: 'khanh', tu: 14, den: 19, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-25', id: 'vi',    tu: 8,  den: 10, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-25', id: 'vi',    tu: 10, den: 18, viec: 'pha chế',  ot: 0 },
+    { iso: '2026-08-25', id: 'vi',    tu: 18, den: 19, viec: 'pha chế',  ot: 3 },
+    { iso: '2026-08-25', id: 'diem',  tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-25', id: 'thanh', tu: 15, den: 19, viec: 'chiết',    ot: 0 },
+
+    // T4 (26/8)
+    { iso: '2026-08-26', id: 'tai',   tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'tai',   tu: 12, den: 17, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'huy',   tu: 9,  den: 13, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'huy',   tu: 13, den: 18, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'khanh', tu: 10, den: 14, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'khanh', tu: 14, den: 19, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'vi',    tu: 8,  den: 10, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'vi',    tu: 10, den: 18, viec: 'pha chế',  ot: 0 },
+    { iso: '2026-08-26', id: 'vi',    tu: 18, den: 19, viec: 'pha chế',  ot: 3 },
+    { iso: '2026-08-26', id: 'thanh', tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-26', id: 'diem',  tu: 15, den: 19, viec: 'chiết',    ot: 0 },
+
+    // T5 (27/8) — Thanh nghỉ
+    { iso: '2026-08-27', id: 'tai',   tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'tai',   tu: 12, den: 17, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'huy',   tu: 9,  den: 13, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'huy',   tu: 13, den: 18, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'khanh', tu: 10, den: 14, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'khanh', tu: 14, den: 19, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'vi',    tu: 8,  den: 10, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-27', id: 'vi',    tu: 10, den: 18, viec: 'pha chế',  ot: 0 },
+    { iso: '2026-08-27', id: 'vi',    tu: 18, den: 19, viec: 'pha chế',  ot: 3 },
+    { iso: '2026-08-27', id: 'diem',  tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+
+    // T6 (28/8) — Diễm nghỉ (Ca trống CT2)
+    { iso: '2026-08-28', id: 'tai',   tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'tai',   tu: 12, den: 17, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'huy',   tu: 9,  den: 13, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'huy',   tu: 13, den: 18, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'khanh', tu: 10, den: 14, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'khanh', tu: 14, den: 19, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'vi',    tu: 8,  den: 10, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-28', id: 'vi',    tu: 10, den: 18, viec: 'pha chế',  ot: 0 },
+    { iso: '2026-08-28', id: 'vi',    tu: 18, den: 19, viec: 'pha chế',  ot: 3 },
+    { iso: '2026-08-28', id: 'thanh', tu: 15, den: 19, viec: 'chiết',    ot: 0 },
+
+    // T7 (29/8)
+    { iso: '2026-08-29', id: 'tai',   tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'tai',   tu: 12, den: 17, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'huy',   tu: 9,  den: 13, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'huy',   tu: 13, den: 18, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'khanh', tu: 10, den: 14, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'khanh', tu: 14, den: 19, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'vi',    tu: 8,  den: 10, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'vi',    tu: 10, den: 18, viec: 'pha chế',  ot: 0 },
+    { iso: '2026-08-29', id: 'vi',    tu: 18, den: 19, viec: 'pha chế',  ot: 3 },
+    { iso: '2026-08-29', id: 'thanh', tu: 8,  den: 12, viec: 'đóng gói', ot: 0 },
+    { iso: '2026-08-29', id: 'diem',  tu: 15, den: 19, viec: 'chiết',    ot: 0 },
+
+    // CN (30/8) — Khánh tăng ca 4h, Huy trực 8-12, thiếu 1 người (Ca trống CT3)
+    { iso: '2026-08-30', id: 'khanh', tu: 8,  den: 12, viec: 'đóng gói', ot: 4 },
+    { iso: '2026-08-30', id: 'huy',   tu: 8,  den: 12, viec: 'đóng gói', ot: 0 }
+  ],
+  caTrong: [
+    { ma: 'CT1', iso: '2026-08-25', khung: '8h–12h', viec: 'đóng gói', ly: 'Tài nghỉ, dây chuyền thiếu 1 người' },
+    { ma: 'CT2', iso: '2026-08-28', khung: '8h–10h', viec: 'đóng gói', ly: 'Thiếu người đóng gói' },
+    { ma: 'CT3', iso: '2026-08-30', khung: '8h–12h', viec: 'đóng gói', ly: 'Chưa đủ 3 người trực Chủ nhật' }
+  ],
+  chot: '20:07 · 17/08'
+};
+
 /* ══════════════════════════════════════════════════════════ */
 const $ = i => document.getElementById(i);
 const qs = new URLSearchParams(location.search);
@@ -305,7 +905,279 @@ const MAU = {thanh:'#2a78d6', diem:'#c22a63', vi:'#7c4bb0',
 
 let D = DEMO, me = null, pick = {}, tab = 0;
 
+/* Helper nhãn việc chế độ ảnh */
+function nhanViec(v){
+  if(!v) return 'GÓI';
+  const s = v.toLowerCase();
+  if(s.includes('pha')) return 'PHA';
+  if(s.includes('chiết') || s.includes('chiet')) return 'CHIẾT';
+  return 'GÓI';
+}
+function lopViec(v){
+  if(!v) return 'goi';
+  const s = v.toLowerCase();
+  if(s.includes('pha')) return 'pha';
+  if(s.includes('chiết') || s.includes('chiet')) return 'chiet';
+  return 'goi';
+}
+
+/* ── LUỒNG CHẾ ĐỘ ẢNH ── */
+async function napAnh(){
+  try {
+    // Dữ liệu THẬT từ action=anh — lỗi mạng phải ra thẻ đỏ, không dùng dữ liệu giả
+    let dAnh = null;
+    const tuanParam = qs.get('tuan');
+    if (API) {
+      try {
+        dAnh = await (await fetch(`${API}?action=anh${tuanParam ? '&tuan=' + encodeURIComponent(tuanParam) : ''}`)).json();
+      } catch (err) {
+        veAnhLoi(err.message || 'Lỗi mạng');
+        document.body.setAttribute('data-anh', 'loi');
+        return;
+      }
+    }
+
+    // Lưu ý: server LUÔN có ô loi (rỗng khi không lỗi) — kiểm nội dung, không kiểm tồn tại
+    if (dAnh && dAnh.loi){
+      veAnhLoi(dAnh.loi);
+      document.body.setAttribute('data-anh', 'loi');
+      return;
+    }
+
+    if(!dAnh.lich || dAnh.lich.length === 0){
+      veAnhChuaXep(dAnh);
+      if(document.fonts && document.fonts.ready) await document.fonts.ready;
+      document.body.setAttribute('data-anh', 'xong');
+      return;
+    }
+
+    veAnh(dAnh);
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    document.body.setAttribute('data-anh', 'xong');
+  } catch(e){
+    console.error(e);
+    veAnhLoi(e.message || 'Lỗi không xác định');
+    document.body.setAttribute('data-anh', 'loi');
+  }
+}
+
+function veAnh(dData){
+  const el = $('anh');
+  if(!el) return;
+
+  // 1. Tính tăng ca
+  let tongOt = 0;
+  const nguoiOt = {};
+  (dData.lich || []).forEach(r => {
+    const ot = Number(r.ot) || 0;
+    if(ot > 0){
+      tongOt += ot;
+      nguoiOt[r.id] = (nguoiOt[r.id] || 0) + ot;
+    }
+  });
+
+  const dsOtStr = Object.keys(nguoiOt).map(id => {
+    const ten = (dData.nguoi[id] && dData.nguoi[id].ten) || id;
+    return `${ten} ${nguoiOt[id]}h`;
+  }).join(' · ');
+
+  // 2. Dải 1: Đầu ảnh
+  const dai1Html = `
+    <div class="anh-dai1">
+      <div class="anh-dai1-trai">
+        <div class="anh-tieu-de">LỊCH TUẦN ${dData.tuan.dau} – ${dData.tuan.cuoi}</div>
+        <div class="anh-phu-de">Cửa hàng · T2–T7 8h–19h · CN 8h–12h</div>
+      </div>
+      <div class="anh-dai1-phai">
+        <div class="anh-badge-tc">⚡ TĂNG CA <span class="anh-so-tc">${tongOt}h</span></div>
+        ${dsOtStr ? `<div class="anh-ds-tc">${dsOtStr}</div>` : ''}
+      </div>
+    </div>
+  `;
+
+  // 3. Dải 2: Chú thích 3 việc
+  const dai2Html = `
+    <div class="anh-dai2">
+      <span class="anh-ct-item"><span class="anh-cham anh-cham-goi">■</span> ĐÓNG GÓI</span>
+      <span class="anh-ct-item"><span class="anh-cham anh-cham-pha">■</span> PHA CHẾ</span>
+      <span class="anh-ct-item"><span class="anh-cham anh-cham-chiet">■</span> CHIẾT</span>
+      <span class="anh-ct-item"><span class="anh-cham anh-cham-tc">▨</span> tăng ca</span>
+    </div>
+  `;
+
+  // 4. Dải 3: Bảng lịch
+  const ngayCoCaTrong = new Set((dData.caTrong || []).map(ct => ct.iso));
+
+  let headColsHtml = `<div class="anh-cot-ten-head">NHÂN VIÊN</div>`;
+  dData.ngay.forEach(d => {
+    const coTrong = ngayCoCaTrong.has(d.iso);
+    const cnCls = d.cn ? ' anh-cn-cot' : '';
+    headColsHtml += `
+      <div class="anh-cot-ngay${cnCls}">
+        <div class="anh-thu${coTrong ? ' co-trong' : ''}">${d.k}</div>
+        <div class="anh-ngay-thang">${d.ngay}</div>
+        ${d.cn ? '<div class="anh-cn-gio">8h–12h</div>' : ''}
+      </div>
+    `;
+  });
+
+  // Thứ tự các hàng nhân viên theo đúng cấu trúc dData.nguoi (Tài, Huy, Khánh, Vi, Thanh, Diễm)
+  const danhSachId = Object.keys(dData.nguoi);
+  let rowsHtml = '';
+  danhSachId.forEach(pid => {
+    const p = dData.nguoi[pid];
+    const otNguoi = nguoiOt[pid] || 0;
+    const otLine = otNguoi > 0 ? `<div class="anh-tc-nv">⚡ ${otNguoi}h</div>` : '';
+
+    let cellsHtml = `
+      <div class="anh-o-ten">
+        <div class="anh-ten-nv">${p.ten}</div>
+        <div class="anh-vaitro-nv">${p.vaitro}</div>
+        ${otLine}
+      </div>
+    `;
+
+    dData.ngay.forEach(d => {
+      const cnCls = d.cn ? ' anh-cn-cot' : '';
+      const shifts = (dData.lich || []).filter(r => r.id === pid && r.iso === d.iso);
+      shifts.sort((a, b) => Number(a.tu) - Number(b.tu));
+
+      // Quy tắc gộp 2 đoạn liền nhau: cùng viec VÀ cùng trạng thái ot VÀ den đoạn trước == tu đoạn sau
+      const gop = [];
+      for(const s of shifts){
+        if(gop.length === 0){
+          gop.push({ ...s });
+        } else {
+          const prev = gop[gop.length - 1];
+          const cungViec = (prev.viec || '').trim().toLowerCase() === (s.viec || '').trim().toLowerCase();
+          const prevOt = (Number(prev.ot) || 0) > 0;
+          const currOt = (Number(s.ot) || 0) > 0;
+          const cungOt = prevOt === currOt;
+          const lienNhau = Number(prev.den) === Number(s.tu);
+
+          if(cungViec && cungOt && lienNhau){
+            prev.den = s.den;
+            prev.ot = (Number(prev.ot) || 0) + (Number(s.ot) || 0);
+          } else {
+            gop.push({ ...s });
+          }
+        }
+      }
+
+      // Đánh dấu viền đỏ đứt nếu ô tương ứng ngày có ca trống mà người này nghỉ
+      let oTrongCls = '';
+      const coCaTrongNgay = ngayCoCaTrong.has(d.iso);
+      if(coCaTrongNgay && gop.length === 0){
+        if(!d.cn && (pid === 'tai' || pid === 'diem')){
+          oTrongCls = ' anh-o-trong';
+        } else if(d.cn && pid === 'tai'){
+          oTrongCls = ' anh-o-trong';
+        }
+      }
+
+      let cellInner = '';
+      if(gop.length > 0){
+        cellInner = gop.map(s => {
+          const nhan = nhanViec(s.viec);
+          const lop = lopViec(s.viec);
+          const isOt = (Number(s.ot) || 0) > 0;
+          const otNum = Number(s.ot) || 0;
+          const badge = isOt ? `<span class="anh-chip-tc-badge">+${otNum}h</span>` : '';
+          const tcCls = isOt ? ' anh-chip-tc' : '';
+          return `
+            <div class="anh-chip anh-chip-${lop}${tcCls}">
+              ${badge}
+              <div class="anh-chip-gio">${s.tu}–${s.den}</div>
+              <div class="anh-chip-nhan">${nhan}</div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        if(d.cn){
+          cellInner = ''; // Chủ nhật không có ca: để trống hoàn toàn nền chìm
+        } else {
+          cellInner = `<div class="anh-chip-nghi">NGHỈ</div>`;
+        }
+      }
+
+      cellsHtml += `<div class="anh-o-ca${cnCls}${oTrongCls}">${cellInner}</div>`;
+    });
+
+    rowsHtml += `<div class="anh-hang">${cellsHtml}</div>`;
+  });
+
+  const dai3Html = `
+    <div class="anh-bang-wrap">
+      <div class="anh-hang-dau">${headColsHtml}</div>
+      ${rowsHtml}
+    </div>
+  `;
+
+  // 5. Dải 4: Ca trống
+  let dai4Html = '';
+  if(dData.caTrong && dData.caTrong.length > 0){
+    const chipTrongList = dData.caTrong.map(ct => {
+      const ngayObj = dData.ngay.find(n => n.iso === ct.iso) || {};
+      const thu = ngayObj.k || ct.iso;
+      const nhan = ct.viec || 'đóng gói';
+      return `<div class="anh-chip-trong">[ ${thu} · ${ct.khung} · ${nhan} ]</div>`;
+    }).join('');
+
+    dai4Html = `
+      <div class="anh-dai4">
+        <div class="anh-dai4-tieu-de">⚠ ${dData.caTrong.length} CA CHƯA CÓ NGƯỜI</div>
+        <div class="anh-dai4-danh-sach">${chipTrongList}</div>
+      </div>
+    `;
+  } else {
+    dai4Html = `
+      <div class="anh-dai4">
+        <div class="anh-dai4-du">✓ ĐỦ NGƯỜI CẢ TUẦN</div>
+      </div>
+    `;
+  }
+
+  // 6. Dải 5: Chân ảnh
+  const dai5Html = `
+    <div class="anh-dai5">
+      <div class="anh-chot">Chốt ${dData.chot || '20:07 · 17/08'} — bấm link trong tin nhắn</div>
+    </div>
+  `;
+
+  el.innerHTML = dai1Html + dai2Html + dai3Html + dai4Html + dai5Html;
+}
+
+function veAnhLoi(loi){
+  const el = $('anh');
+  if(!el) return;
+  el.innerHTML = `
+    <div class="anh-thong-bao anh-loi">
+      <div class="anh-thong-bao-t1">⚠ KHÔNG LẤY ĐƯỢC DỮ LIỆU</div>
+      <div class="anh-thong-bao-t2">${loi || 'Lỗi kết nối máy chủ'}</div>
+    </div>
+  `;
+}
+
+function veAnhChuaXep(dData){
+  const el = $('anh');
+  if(!el) return;
+  const tuanStr = dData && dData.tuan ? `${dData.tuan.dau} – ${dData.tuan.cuoi}` : '';
+  el.innerHTML = `
+    <div class="anh-thong-bao">
+      <div class="anh-thong-bao-t1">TUẦN ${tuanStr} CHƯA XẾP LỊCH</div>
+      <div class="anh-thong-bao-t2">Vui lòng kiểm tra lại sau khi quản lý chốt lịch.</div>
+    </div>
+  `;
+}
+
+/* ── LUỒNG CHÍNH APP ĐĂNG KÝ ── */
 async function nap(){
+  // Nếu đang ở chế độ ảnh, gọi napAnh() rồi return ngay lập tức
+  if(document.documentElement.classList.contains('anh')){
+    napAnh();
+    return;
+  }
+
   if(API){
     try{
       D = await (await fetch(`${API}?action=data&u=${encodeURIComponent(uid)}`)).json();
