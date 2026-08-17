@@ -321,15 +321,15 @@
     border-radius: 9px;
     font-size: 13px;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .anh-so-tc {
     font-size: 22px;
     font-weight: 900;
-    line-height: 1;
+    line-height: 1.25;
   }
   .anh-ds-tc {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--anh-phu);
     margin-top: 3px;
     font-weight: 600;
@@ -361,6 +361,11 @@
   .anh-cham-pha { color: var(--anh-pha-nen); font-size: 13px; }
   .anh-cham-chiet { color: var(--anh-chiet-nen); font-size: 13px; }
   .anh-cham-tc { color: var(--anh-tang-ca); font-size: 13px; font-weight: 800; }
+  /* Nền sáng: ô việc là màu NHẠT, nên ô vuông chú thích phải lấy màu CHỮ,
+     không thì chú thích gần như tàng hình trên thẻ trắng. */
+  html.anh.sang .anh-cham-goi { color: var(--anh-goi-chu); }
+  html.anh.sang .anh-cham-pha { color: var(--anh-pha-chu); }
+  html.anh.sang .anh-cham-chiet { color: var(--anh-chiet-chu); }
 
   /* Bố cục Dải 3: Bảng lịch */
   .anh-bang-wrap {
@@ -380,7 +385,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     color: var(--anh-phu);
     letter-spacing: 0.5px;
@@ -405,7 +410,7 @@
     font-size: 15px;
     font-weight: 800;
     color: var(--anh-chu);
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .anh-thu.co-trong {
     border-bottom: 3px solid var(--anh-do);
@@ -413,16 +418,16 @@
     margin-bottom: -1px;
   }
   .anh-ngay-thang {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--anh-phu);
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .anh-cn-gio {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--anh-tang-ca);
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1.25;
     margin-top: 1px;
   }
 
@@ -448,21 +453,21 @@
     font-size: 15px;
     font-weight: 800;
     color: var(--anh-chu);
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .anh-vaitro-nv {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--anh-phu);
     font-weight: 600;
     margin-top: 2px;
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .anh-tc-nv {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--anh-tang-ca);
     font-weight: 800;
     margin-top: 2px;
-    line-height: 1.2;
+    line-height: 1.25;
   }
 
   .anh-o-ca {
@@ -489,9 +494,11 @@
     padding: 2px 1px;
   }
 
-  /* Chip ca */
+  /* Chip ca
+     Cao 36px = 15px×1.25 (giờ) + 12px×1.25 (nhãn) + 1px, còn thừa chỗ cho dấu
+     tiếng Việt. KHÔNG dùng overflow:hidden — chữ hoa có dấu (Ế, Ữ) bị cắt ngọn. */
   .anh-chip {
-    height: 34px;
+    height: 36px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -499,21 +506,20 @@
     align-items: center;
     position: relative;
     box-sizing: border-box;
-    overflow: hidden;
     text-align: center;
   }
   .anh-chip-gio {
     font-size: 15px;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.25;
     font-variant-numeric: tabular-nums;
   }
   .anh-chip-nhan {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.4px;
-    line-height: 1.1;
+    line-height: 1.25;
     margin-top: 1px;
   }
   .anh-chip-goi {
@@ -528,9 +534,14 @@
     background: var(--anh-chiet-nen);
     color: var(--anh-chiet-chu);
   }
+  /* Tăng ca = LỚP PHỦ (viền hổ phách 3px + sọc chéo), KHÔNG đổi màu nền việc.
+     Chip tăng ca cao hơn để badge +Xh nằm hẳn một dải riêng trên đỉnh chip —
+     badge đè chồng lên dòng giờ thì mất luôn số giờ (lỗi cũ: "8–" + "+4h"). */
   .anh-chip-tc {
     border: 3px solid var(--anh-tang-ca) !important;
     background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(251, 191, 36, 0.22) 4px, rgba(251, 191, 36, 0.22) 8px) !important;
+    height: 59px;
+    padding-top: 17px;
   }
   html.anh.sang .anh-chip-tc {
     background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(178, 106, 0, 0.2) 4px, rgba(178, 106, 0, 0.2) 8px) !important;
@@ -538,27 +549,53 @@
   .anh-chip-tc-badge {
     position: absolute;
     top: 0;
+    left: 0;
     right: 0;
     background: var(--anh-tang-ca);
     color: var(--anh-tang-ca-chu);
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 900;
-    padding: 1px 3px;
-    border-bottom-left-radius: 4px;
-    line-height: 1;
+    padding: 0 3px;
+    text-align: center;
+    border-radius: 2px 2px 0 0;
+    line-height: 1.25;
   }
 
   .anh-chip-nghi {
-    height: 34px;
+    height: 36px;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--anh-nghi-nen);
     color: var(--anh-nghi-chu);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 0.5px;
+    box-sizing: border-box;
+  }
+
+  /* Hàng CẦN NGƯỜI — dựng từ mảng caTrong, nối mắt từ dải đỏ ④ lên đúng cột ngày.
+     Cố ý TÁCH khỏi ô "NGHỈ" của nhân viên: xám = đã xin nghỉ, đỏ = chưa có ai. */
+  .anh-hang-can .anh-o-ca {
+    min-height: 0;
+  }
+  .anh-ten-can {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--anh-do);
+    line-height: 1.25;
+    letter-spacing: 0.3px;
+  }
+  .anh-chip-can {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    color: var(--anh-do-chu);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
     box-sizing: border-box;
   }
 
@@ -920,6 +957,23 @@ function lopViec(v){
   if(s.includes('chiết') || s.includes('chiet')) return 'chiet';
   return 'goi';
 }
+/* '8h – 12h' (chuỗi Sheet) → '8–12' cho vừa bề ngang cột 62px */
+function gonKhung(k){
+  const s = String(k || '');
+  const m = s.match(/(\d+)\D+(\d+)/);
+  return m ? m[1] + '–' + m[2] : s.replace(/\s+/g, '');
+}
+/* Thứ tự hàng: nhóm theo VIỆC (đóng gói → pha chế → part-time) như mục 5.3 kế
+   hoạch, không theo thứ tự tab NhanVien (tab đang là thanh, diem, vi, tai…)
+   và không hard-code tên — người thứ 7 vào làm vẫn tự xếp đúng nhóm. */
+function thuTuNguoi(nguoi){
+  const bac = { full: 0, lai: 1, part: 2 };
+  return Object.keys(nguoi || {}).sort((a, b) => {
+    const x = bac[(nguoi[a].loai || 'part').toLowerCase()];
+    const y = bac[(nguoi[b].loai || 'part').toLowerCase()];
+    return (x === undefined ? 2 : x) - (y === undefined ? 2 : y);
+  });
+}
 
 /* ── LUỒNG CHẾ ĐỘ ẢNH ── */
 async function napAnh(){
@@ -935,6 +989,14 @@ async function napAnh(){
         document.body.setAttribute('data-anh', 'loi');
         return;
       }
+    }
+
+    // Không có URL API thì không có gì để vẽ — ra thẻ đỏ luôn, đừng để ném lỗi
+    // ở dòng dưới rồi mới bắt được (thẻ đỏ khi đó không nói được lý do thật).
+    if (!dAnh){
+      veAnhLoi('Chưa cấu hình URL Apps Script (hằng số API rỗng)');
+      document.body.setAttribute('data-anh', 'loi');
+      return;
     }
 
     // Lưu ý: server LUÔN có ô loi (rỗng khi không lỗi) — kiểm nội dung, không kiểm tồn tại
@@ -1021,8 +1083,8 @@ function veAnh(dData){
     `;
   });
 
-  // Thứ tự các hàng nhân viên theo đúng cấu trúc dData.nguoi (Tài, Huy, Khánh, Vi, Thanh, Diễm)
-  const danhSachId = Object.keys(dData.nguoi);
+  // Thứ tự hàng: nhóm theo việc (Tài, Huy, Khánh → Vi → Thanh, Diễm)
+  const danhSachId = thuTuNguoi(dData.nguoi);
   let rowsHtml = '';
   danhSachId.forEach(pid => {
     const p = dData.nguoi[pid];
@@ -1064,17 +1126,6 @@ function veAnh(dData){
         }
       }
 
-      // Đánh dấu viền đỏ đứt nếu ô tương ứng ngày có ca trống mà người này nghỉ
-      let oTrongCls = '';
-      const coCaTrongNgay = ngayCoCaTrong.has(d.iso);
-      if(coCaTrongNgay && gop.length === 0){
-        if(!d.cn && (pid === 'tai' || pid === 'diem')){
-          oTrongCls = ' anh-o-trong';
-        } else if(d.cn && pid === 'tai'){
-          oTrongCls = ' anh-o-trong';
-        }
-      }
-
       let cellInner = '';
       if(gop.length > 0){
         cellInner = gop.map(s => {
@@ -1100,16 +1151,40 @@ function veAnh(dData){
         }
       }
 
-      cellsHtml += `<div class="anh-o-ca${cnCls}${oTrongCls}">${cellInner}</div>`;
+      cellsHtml += `<div class="anh-o-ca${cnCls}">${cellInner}</div>`;
     });
 
     rowsHtml += `<div class="anh-hang">${cellsHtml}</div>`;
   });
 
+  /* Hàng cuối bảng: CẦN NGƯỜI — mỗi cột ngày có ca trống thì ô đó viền đỏ đứt.
+     Dựng từ mảng caTrong nên tuần nào cũng đúng; KHÔNG tô đỏ ô "NGHỈ" của
+     nhân viên (người ta đã xin nghỉ, tô đỏ là làm họ tưởng phải đi làm bù). */
+  let rowCanHtml = '';
+  if((dData.caTrong || []).length > 0){
+    const theoNgay = {};
+    dData.caTrong.forEach(ct => {
+      (theoNgay[ct.iso] = theoNgay[ct.iso] || []).push(ct);
+    });
+    let canCells = `<div class="anh-o-ten"><div class="anh-ten-can">⚠ CẦN<br>NGƯỜI</div></div>`;
+    dData.ngay.forEach(d => {
+      const cnCls = d.cn ? ' anh-cn-cot' : '';
+      const ds = theoNgay[d.iso] || [];
+      if(ds.length === 0){
+        canCells += `<div class="anh-o-ca${cnCls}"></div>`;
+      } else {
+        const nhan = ds.length === 1 ? gonKhung(ds[0].khung) : ds.length + ' CA';
+        canCells += `<div class="anh-o-ca anh-o-trong${cnCls}"><div class="anh-chip-can">${nhan}</div></div>`;
+      }
+    });
+    rowCanHtml = `<div class="anh-hang anh-hang-can">${canCells}</div>`;
+  }
+
   const dai3Html = `
     <div class="anh-bang-wrap">
       <div class="anh-hang-dau">${headColsHtml}</div>
       ${rowsHtml}
+      ${rowCanHtml}
     </div>
   `;
 
@@ -1119,8 +1194,9 @@ function veAnh(dData){
     const chipTrongList = dData.caTrong.map(ct => {
       const ngayObj = dData.ngay.find(n => n.iso === ct.iso) || {};
       const thu = ngayObj.k || ct.iso;
-      const nhan = ct.viec || 'đóng gói';
-      return `<div class="anh-chip-trong">[ ${thu} · ${ct.khung} · ${nhan} ]</div>`;
+      // Nhãn ngắn GÓI/PHA/CHIẾT như trong bảng, giờ gọn '8–12h': xếp được 3 chip
+      // một dòng thay vì 2 → dải đỏ thấp lại, ảnh không vượt trần 1920px.
+      return `<div class="anh-chip-trong">${thu} · ${gonKhung(ct.khung)}h · ${nhanViec(ct.viec)}</div>`;
     }).join('');
 
     dai4Html = `
@@ -1145,6 +1221,8 @@ function veAnh(dData){
   `;
 
   el.innerHTML = dai1Html + dai2Html + dai3Html + dai4Html + dai5Html;
+  // Cờ tuần để chup-anh.js đặt tên file đúng ngày thứ 2 khi chạy không tham số
+  if(dData.tuan_id) document.body.setAttribute('data-tuan', dData.tuan_id);
 }
 
 function veAnhLoi(loi){
@@ -1168,6 +1246,7 @@ function veAnhChuaXep(dData){
       <div class="anh-thong-bao-t2">Vui lòng kiểm tra lại sau khi quản lý chốt lịch.</div>
     </div>
   `;
+  if(dData && dData.tuan_id) document.body.setAttribute('data-tuan', dData.tuan_id);
 }
 
 /* ── LUỒNG CHÍNH APP ĐĂNG KÝ ── */
