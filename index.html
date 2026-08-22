@@ -1421,7 +1421,10 @@ function veCaTrong(){
         <div class="sp tag ${o.ot?'t-ot':'t-ok'}">${o.ot?'+ TĂNG CA':'KHÔNG BẮT BUỘC'}</div></div>
       <div class="t2"><b>${o.gio}</b> · ${o.viec}</div>
       <div class="t2" style="color:var(--muted)">${o.ly}</div>
-      <button onclick="nhanCa('${o.id}')">Nhận ca này</button>
+      ${o.daGhiDanh
+        ? `<button style="background:var(--card);color:var(--accent);border:1px solid var(--accent)" onclick="nhanCa('${o.id}')">✓ Đã ghi danh · bấm để hủy</button>`
+        : `<button onclick="nhanCa('${o.id}')">Nhận ca này</button>`}
+      ${o.soNguoi > 0 ? `<div class="t2" style="color:var(--accent)">${o.soNguoi} người đã ghi danh — CN 20:00 chốt người ít giờ nhất</div>` : `<div class="t2" style="color:var(--muted)">Bấm nhận = ghi danh, chưa chốt — CN 20:00 chốt người ít giờ tuần</div>`}
     </div>`).join('')
     : `<div class="empty"><div class="e">✅</div><div class="t">Không có ca nào cần người</div></div>`;
 }
@@ -1478,15 +1481,20 @@ async function guiDangKy(){
   }
 }
 async function nhanCa(id){
-  if(API){
-    try{
-      const r = await (await fetch(API,{method:'POST',body:JSON.stringify({action:'nhan',u:uid,id})})).json();
-      if(!r.ok){ toast('⚠️ ' + r.loi); return; }
-    }catch(e){
-      toast('⚠️ Mạng lỗi, bấm lại'); return;
+  if(!API){ toast('Bản demo không ghi danh được'); return; }
+  try{
+    const r = await (await fetch(API,{method:'POST',body:JSON.stringify({action:'nhan',u:uid,id})})).json();
+    if(!r.ok){ toast('⚠️ ' + r.loi); return; }
+    const o = D.caTrong && D.caTrong.find(x=>x.id===id);
+    if(r.daHuy){
+      if(o){ o.daGhiDanh = false; o.soNguoi = r.soNguoi || 0; }
+      toast('Đã hủy ghi danh');
+    }else{
+      if(o){ o.daGhiDanh = true; o.soNguoi = r.soNguoi || 0; }
+      toast('✓ Đã ghi danh — CN 20:00 chốt người ít giờ nhất');
     }
-  }
-  D.caTrong = D.caTrong.filter(o=>o.id!==id); veCaTrong(); toast('✓ Đã nhận ca');
+    veCaTrong();
+  }catch(e){ toast('⚠️ Mạng lỗi, bấm lại'); }
 }
 
 nap();
