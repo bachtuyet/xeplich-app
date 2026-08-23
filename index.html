@@ -936,6 +936,8 @@ const qs = new URLSearchParams(location.search);
 /* Ai đang dùng: lấy từ #hash (đã chọn tên) hoặc ?u= (link riêng, nếu muốn).
    Không có thì hiện màn chọn tên. */
 let uid = (location.hash.slice(1) || qs.get('u') || '').toLowerCase();
+// 23/08: mở thẳng tab CA TRỐNG khi link có ?catrong (link đăng ký ca trống riêng)
+let SANG_CA_TRONG = /(^|[?&])(tab=catrong|catrong=1)(&|$)/.test(location.search);
 
 const MAU = {thanh:'#2a78d6', diem:'#c22a63', vi:'#7c4bb0',
              tai:'#1c7c43',  huy:'#d9622a',  khanh:'#0f7d8c'};
@@ -1297,6 +1299,7 @@ function vao(id){
   pick = {}; tab = 0; go(0);
   $('gate').classList.add('hide');
   ve();
+  if(SANG_CA_TRONG){ SANG_CA_TRONG = false; go(2); }   // link ca trống → mở thẳng tab 🔄
 }
 
 function doiNguoi(){
