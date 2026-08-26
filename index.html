@@ -1275,9 +1275,9 @@ async function nap(){
 function veCong(){
   $('gate').classList.remove('hide');
   const nhom = [
-    ['PART-TIME', ['thanh','diem']],
+    ['PART-TIME', ['thanh','diem','khanh']],
     ['PHA CHẾ',   ['vi']],
-    ['ĐÓNG GÓI · FULL-TIME', ['tai','huy','khanh']]
+    ['ĐÓNG GÓI · FULL-TIME', ['tai','huy']]
   ];
   $('plist').innerHTML = nhom.map(([ten,ids])=>{
     const co = ids.filter(i=>D.nguoi[i]);
@@ -1309,10 +1309,12 @@ function doiNguoi(){
 }
 
 function cot(){
-  if(me.loai==='part') return [{k:'s',n:'CA SÁNG',g:'8h–12h',c:''},{k:'c',n:'CA CHIỀU',g:'15h–19h',c:'p'}];
-  if(me.loai==='lai')  return [{k:'s',n:'CA SÁNG',g:'8h–10h',c:''},{k:'t',n:'CA TỐI',g:'18h–19h',c:'p'}];
-  return [{k:'nc',n:'NGHỈ CHIỀU',g:'về lúc 13h',c:''},
-          {k:'ns',n:'NGHỈ SÁNG',g:'vào lúc 13h',c:'p'},
+  // 26/08: part-time 3 ca · Vi (lai) chuyển sang BÁO NGHỈ như full-time
+  if(me.loai==='part') return [{k:'s',n:'CA SÁNG',g:'8h–12h30',c:''},
+                               {k:'c',n:'CA CHIỀU',g:'14h–18h30',c:'p'},
+                               {k:'t',n:'CA TỐI',g:'15h–19h',c:'p'}];
+  return [{k:'nc',n:'NGHỈ CHIỀU',g:'về lúc 12h30',c:''},
+          {k:'ns',n:'NGHỈ SÁNG',g:'vào lúc 14h',c:'p'},
           {k:'n', n:'CẢ NGÀY',   g:'nghỉ hẳn',   c:'p'}];
 }
 const NGHI = ['n','ns','nc'];
@@ -1320,7 +1322,8 @@ const coO = (d,k) => me.loai==='lai' ? !d.cn : (me.loai==='part' ? (d.cn ? k==='
 const get = (dk,k) => !!(pick[dk] && pick[dk][k]);
 const set = (dk,k,v) => {
   pick[dk] = pick[dk] || {};
-  if(me.loai==='full' && v) NGHI.forEach(x=>{ if(x!==k) pick[dk][x]=false; });  // chỉ chọn 1 kiểu nghỉ
+  // 26/08: Vi (lai) cũng chỉ chọn 1 kiểu nghỉ như full-time
+  if((me.loai==='full' || me.loai==='lai') && v) NGHI.forEach(x=>{ if(x!==k) pick[dk][x]=false; });
   pick[dk][k] = v;
 };
 
@@ -1358,14 +1361,15 @@ function ve(){
 function veDangKy(){
   const C = cot();
   $('dkHint').innerHTML = me.loai==='lai'
-    ? '⚠️ <b>Ca sáng 8h–10h</b> là chỗ cố định trong dây chuyền đóng gói — bỏ ngày nào thì phải gọi người khác vào bù.'
+    ? 'Mặc định bạn <b>đi làm đủ tuần</b> — chỉ bấm ngày nào cần nghỉ.<br>'
+      +'⚠️ <b>Ca sáng 8h–10h</b> là chỗ cố định trong dây chuyền đóng gói — nghỉ ngày nào thì phải gọi người khác vào bù.'
     : me.loai==='full'
     ? 'Mặc định bạn <b>đi làm đủ tuần</b> — chỉ bấm ngày nào cần nghỉ.<br>'
       +'Chỗ bạn nghỉ sẽ tự treo lên mục <b>Ca trống</b> để cả đội thấy, ai nhận được thì bấm nhận.'
     : 'Chọn <b>hết những ca bạn rảnh</b> — bot sẽ chia đều. Chọn càng nhiều càng dễ xếp.';
 
   const q = $('qk'); q.innerHTML='';
-  if(me.loai!=='full'){
+  if(me.loai==='part'){          // 26/08: chỉ part-time mới có "Chọn hết"
     q.innerHTML = `<button class="qb" onclick="chonHet()">Chọn hết</button>`;
   }
   q.innerHTML += `<button class="qb" onclick="pick={};veLuoi();">Xoá hết</button>`;
