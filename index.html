@@ -1524,6 +1524,8 @@ async function guiDangKy(){
 }
 async function nhanCa(id){
   if(!API){ toast('Bản demo không ghi danh được'); return; }
+  const btns = document.querySelectorAll(`button[onclick="nhanCa('${id}')"]`);
+  btns.forEach(b=>{ b.disabled = true; });   // chống bấm chồng khi đang gửi
   try{
     const r = await (await fetch(API,{method:'POST',body:JSON.stringify({action:'nhan',u:uid,id})})).json();
     if(!r.ok){ toast('⚠️ ' + r.loi); return; }
@@ -1536,7 +1538,21 @@ async function nhanCa(id){
       toast('✓ Đã ghi danh — CN 20:00 chốt người ít giờ nhất');
     }
     veCaTrong();
-  }catch(e){ toast('⚠️ Mạng lỗi, bấm lại'); }
+  }catch(e){
+    // Server có thể ĐÃ nhận (chỉ đường về bị lỗi) → tải lại trạng thái THẬT thay vì báo lỗi mù
+    try{
+      const D2 = await (await fetch(`${API}?action=data&u=${encodeURIComponent(uid)}`)).json();
+      const cu = D2.caTrong && D2.caTrong.find(x=>x.id===id);
+      if(cu && cu.daGhiDanh){
+        D.caTrong = D2.caTrong; veCaTrong();
+        toast('✓ Đã ghi danh — CN 20:00 chốt người ít giờ nhất');
+      }else{
+        toast('⚠️ Chưa ghi danh được, thử lại');
+      }
+    }catch(e2){ toast('⚠️ Mạng lỗi, thử lại'); }
+  }finally{
+    btns.forEach(b=>{ b.disabled = false; });
+  }
 }
 
 nap();
