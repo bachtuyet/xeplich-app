@@ -1322,7 +1322,9 @@ function cot(){
           {k:'n', n:'CẢ NGÀY',   g:'nghỉ hẳn',   c:'p'}];
 }
 const NGHI = ['n','ns','nc'];
-const coO = (d,k) => me.loai==='lai' ? !d.cn : (me.loai==='part' ? (d.cn ? k==='s' : true) : true);
+// 29/08: ngày nghỉ lễ (server gắn cờ d.nghiLe) → KHÔNG có ô nào bấm được
+const coO = (d,k) => d.nghiLe ? false
+                   : (me.loai==='lai' ? !d.cn : (me.loai==='part' ? (d.cn ? k==='s' : true) : true));
 const get = (dk,k) => !!(pick[dk] && pick[dk][k]);
 const set = (dk,k,v) => {
   pick[dk] = pick[dk] || {};
@@ -1393,6 +1395,13 @@ function chonHet(){ D.ngay.forEach(d=>cot().forEach(c=>{ if(coO(d,c.k)) set(d.k,
 function veLuoi(){
   const C = cot(), cols = `1.35fr ${C.map(()=>'1fr').join(' ')}`;
   $('grid').innerHTML = D.ngay.map(d=>{
+    // 29/08: ngày nghỉ lễ — cả hàng là 1 ô báo, không bấm được
+    if(d.nghiLe){
+      return `<div class="gr" style="grid-template-columns:1.35fr 1fr">
+        <div class="gd"><div class="a">${d.ten}</div><div class="b">${d.ngay}</div></div>
+        <div class="gc na" style="grid-column:2/-1;color:#c2410c;background:#fff7ed;border-color:#fde3c0">
+          🎌 ${d.nghiLe} — tiệm nghỉ</div></div>`;
+    }
     const cells = C.map(c=>{
       const co = coO(d,c.k), on = co && get(d.k,c.k);
       return co
@@ -1407,10 +1416,17 @@ function veLuoi(){
 
 function tinh(){
   let n=0, gio=0, thieu=[], caNgay=[];
+  // 29/08: giờ mỗi ca theo khung mới — sáng/chiều 4,5h · tối 4h · CN 4h
+  const GIO_CA = { s:4.5, c:4.5, t:4 };
   D.ngay.forEach(d=>{
+    if(d.nghiLe) return;                       // ngày lễ không tính
     const p = pick[d.k]||{};
-    if(me.loai==='part'){ if(p.s){n++;gio+=4;} if(p.c){n++;gio+=4;} }
-    else if(me.loai==='lai'){ if(p.s){n++;gio+=2;} if(p.t){n++;gio+=1;} if(!d.cn&&!p.s) thieu.push(d.ten); }
+    if(me.loai==='part'){
+      if(p.s){ n++; gio += d.cn ? 4 : GIO_CA.s; }
+      if(p.c){ n++; gio += GIO_CA.c; }
+      if(p.t){ n++; gio += GIO_CA.t; }
+    }
+    else if(me.loai==='lai'){ if(p.t){n++;gio+=1;} }   // Vi: chỉ ca tối là đăng ký thêm
     else if(NGHI.some(k=>p[k])){ n++; if(p.n && !d.cn) caNgay.push(d.ten); }
   });
   const full = me.loai==='full';
