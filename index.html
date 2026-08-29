@@ -1107,7 +1107,8 @@ function veAnh(dData){
       const shifts = (dData.lich || []).filter(r => r.id === pid && r.iso === d.iso);
       shifts.sort((a, b) => Number(a.tu) - Number(b.tu));
 
-      // Quy tắc gộp 2 đoạn liền nhau: cùng viec VÀ cùng trạng thái ot VÀ den đoạn trước == tu đoạn sau
+      // Quy tắc gộp 2 đoạn: cùng viec VÀ cùng trạng thái ot VÀ (giáp nhau HOẶC chồng giờ)
+      // 29/08: ca chiều 14–18.5 + ca tối 15–19 của cùng người chồng nhau → gộp thành 14–19.
       const gop = [];
       for(const s of shifts){
         if(gop.length === 0){
@@ -1118,10 +1119,10 @@ function veAnh(dData){
           const prevOt = (Number(prev.ot) || 0) > 0;
           const currOt = (Number(s.ot) || 0) > 0;
           const cungOt = prevOt === currOt;
-          const lienNhau = Number(prev.den) === Number(s.tu);
+          const chongHoacGiap = Number(s.tu) <= Number(prev.den);   // chồng hoặc giáp
 
-          if(cungViec && cungOt && lienNhau){
-            prev.den = s.den;
+          if(cungViec && cungOt && chongHoacGiap){
+            prev.den = Math.max(Number(prev.den), Number(s.den));   // lấy giờ kết thúc muộn hơn
             prev.ot = (Number(prev.ot) || 0) + (Number(s.ot) || 0);
           } else {
             gop.push({ ...s });
