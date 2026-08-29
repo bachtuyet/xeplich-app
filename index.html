@@ -1026,6 +1026,15 @@ async function napAnh(){
   }
 }
 
+// Hiển thị giờ trong ảnh: mốc nửa tiếng .5 (=h30) hiện thành .3 để khỏi nhầm là :50.
+// 12.5 → "12.3" (12h30) · 18.5 → "18.3" (18h30) · 8 → "8" · 12 → "12".
+function hienGioAnh(x){
+  const n = Number(x);
+  if (Number.isInteger(n)) return String(n);
+  if (Math.abs(n - Math.floor(n) - 0.5) < 1e-9) return Math.floor(n) + '.3';
+  return String(n);
+}
+
 function veAnh(dData){
   const el = $('anh');
   if(!el) return;
@@ -1142,7 +1151,7 @@ function veAnh(dData){
           return `
             <div class="anh-chip anh-chip-${lop}${tcCls}">
               ${badge}
-              <div class="anh-chip-gio">${s.tu}–${s.den}</div>
+              <div class="anh-chip-gio">${hienGioAnh(s.tu)}–${hienGioAnh(s.den)}</div>
               <div class="anh-chip-nhan">${nhan}</div>
             </div>
           `;
