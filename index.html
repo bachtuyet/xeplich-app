@@ -498,7 +498,7 @@
      Cao 36px = 15px×1.25 (giờ) + 12px×1.25 (nhãn) + 1px, còn thừa chỗ cho dấu
      tiếng Việt. KHÔNG dùng overflow:hidden — chữ hoa có dấu (Ế, Ữ) bị cắt ngọn. */
   .anh-chip {
-    height: 36px;
+    min-height: 36px;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -513,6 +513,7 @@
     font-weight: 800;
     line-height: 1.25;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
   .anh-chip-nhan {
     font-size: 12px;
