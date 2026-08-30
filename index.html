@@ -626,6 +626,18 @@
     font-weight: 700;
     line-height: 1.25;
   }
+  /* 30/08: ca đã có người ghi danh (chờ chốt) — viền vàng hổ phách thay vì đỏ */
+  .anh-chip-trong-cocho {
+    border-color: #d99a00;
+    background: #fff6e0;
+    color: #8a6100;
+  }
+  .anh-chip-trong-ten {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+    white-space: normal;
+  }
   .anh-dai4-du {
     background: var(--anh-xanh-la-nen);
     color: var(--anh-xanh-la);
@@ -1204,17 +1216,32 @@ function veAnh(dData){
   // 5. Dải 4: Ca trống
   let dai4Html = '';
   if(dData.caTrong && dData.caTrong.length > 0){
+    // 30/08: phân biệt ca ĐÃ có người ghi danh (chờ chốt 20:00) vs chưa ai đăng ký.
+    // soNguoi/ten do backend (layDuLieuAnh) kèm theo mỗi ca trống.
+    const soDaCo = dData.caTrong.filter(ct => (ct.soNguoi || 0) > 0).length;
     const chipTrongList = dData.caTrong.map(ct => {
       const ngayObj = dData.ngay.find(n => n.iso === ct.iso) || {};
       const thu = ngayObj.k || ct.iso;
-      // Nhãn ngắn GÓI/PHA/CHIẾT như trong bảng, giờ gọn '8–12h': xếp được 3 chip
-      // một dòng thay vì 2 → dải đỏ thấp lại, ảnh không vượt trần 1920px.
-      return `<div class="anh-chip-trong">${thu} · ${gonKhung(ct.khung)}h · ${nhanViec(ct.viec)}</div>`;
+      const dsTen = (ct.ten && ct.ten.length) ? ct.ten.join(', ') : '';
+      // ca đã có người ghi danh → thêm dòng tên nhỏ; chưa ai → chip thường
+      const phanTen = dsTen
+        ? `<div class="anh-chip-trong-ten">⏳ ${dsTen}</div>`
+        : '';
+      return `<div class="anh-chip-trong${dsTen ? ' anh-chip-trong-cocho' : ''}">${thu} · ${gonKhung(ct.khung)}h · ${nhanViec(ct.viec)}${phanTen}</div>`;
     }).join('');
+
+    // Tiêu đề: nếu MỌI ca đều đã có người ghi danh → "đã có người, chờ chốt";
+    // còn ca chưa ai → giữ cảnh báo "chưa có người".
+    const soChuaCo = dData.caTrong.length - soDaCo;
+    const tieuDe = soChuaCo === 0
+      ? `⏳ ${dData.caTrong.length} CA ĐÃ CÓ NGƯỜI — CHỜ CHỐT 20:00`
+      : (soDaCo > 0
+          ? `⚠ ${soChuaCo} CA CHƯA CÓ NGƯỜI · ${soDaCo} CA CHỜ CHỐT`
+          : `⚠ ${dData.caTrong.length} CA CHƯA CÓ NGƯỜI`);
 
     dai4Html = `
       <div class="anh-dai4">
-        <div class="anh-dai4-tieu-de">⚠ ${dData.caTrong.length} CA CHƯA CÓ NGƯỜI</div>
+        <div class="anh-dai4-tieu-de">${tieuDe}</div>
         <div class="anh-dai4-danh-sach">${chipTrongList}</div>
       </div>
     `;
