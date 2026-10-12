@@ -982,7 +982,7 @@ function gonKhung(k){
    hoạch, không theo thứ tự tab NhanVien (tab đang là thanh, diem, vi, tai…)
    và không hard-code tên — người thứ 7 vào làm vẫn tự xếp đúng nhóm. */
 function thuTuNguoi(nguoi){
-  const bac = { full: 0, lai: 1, part: 2 };
+  const bac = { full: 0, lai: 1, part: 2, cung: 2 };
   return Object.keys(nguoi || {}).sort((a, b) => {
     const x = bac[(nguoi[a].loai || 'part').toLowerCase()];
     const y = bac[(nguoi[b].loai || 'part').toLowerCase()];
@@ -1347,10 +1347,10 @@ function doiNguoi(){
 }
 
 function cot(){
-  // 26/08: part-time 3 ca · Vi (lai) = ca sáng BÁO NGHỈ + ca tối TỰ NGUYỆN
+  // 12/10: part-time 2 ca (Thanh/Diễm) · Khánh (cung) = CHỈ báo NGHỈ · Vi (lai) = ca sáng BÁO NGHỈ + ca tối TỰ NGUYỆN
   if(me.loai==='part') return [{k:'s',n:'CA SÁNG',g:'8h–12h30',c:''},
-                               {k:'c',n:'CA CHIỀU',g:'14h–18h30',c:'p'},
-                               {k:'t',n:'CA TỐI',g:'15h–19h',c:'p'}];
+                               {k:'c',n:'CA CHIỀU',g:'14h–18h30',c:'p'}];
+  if(me.loai==='cung') return [{k:'n',n:'NGHỈ',g:'ca 15h–19h',c:''}];
   if(me.loai==='lai')  return [{k:'nc',n:'NGHỈ CHIỀU',g:'về lúc 12h30',c:''},
                                {k:'ns',n:'NGHỈ SÁNG',g:'vào lúc 14h',c:'p'},
                                {k:'n', n:'CẢ NGÀY',  g:'nghỉ hẳn',    c:'p'},
@@ -1362,6 +1362,7 @@ function cot(){
 const NGHI = ['n','ns','nc'];
 // 29/08: ngày nghỉ lễ (server gắn cờ d.nghiLe) → KHÔNG có ô nào bấm được
 const coO = (d,k) => d.nghiLe ? false
+                   : me.loai==='cung' ? (!d.cn && k==='n')
                    : (me.loai==='lai' ? !d.cn : (me.loai==='part' ? (d.cn ? k==='s' : true) : true));
 const get = (dk,k) => !!(pick[dk] && pick[dk][k]);
 const set = (dk,k,v) => {
@@ -1408,7 +1409,10 @@ function ve(){
 
 function veDangKy(){
   const C = cot();
-  $('dkHint').innerHTML = me.loai==='lai'
+  $('dkHint').innerHTML = me.loai==='cung'
+    ? 'Bạn làm <b>cố định ca tối 15h–19h</b> mỗi ngày T2–T7 — không cần đăng ký ca.<br>'
+      +'Chỉ bấm ngày nào bạn cần <b>NGHỈ</b>. Chỗ nghỉ sẽ tự treo lên mục <b>Ca trống</b> cho cả đội nhận.'
+    : me.loai==='lai'
     ? 'Mặc định bạn <b>đi làm đủ tuần</b> — chỉ bấm ngày nào cần nghỉ.<br>'
       +'⚠️ <b>Ca sáng 8h–10h</b> là chỗ cố định trong dây chuyền đóng gói — nghỉ ngày nào thì phải gọi người khác vào bù.'
     : me.loai==='full'
@@ -1443,7 +1447,7 @@ function veLuoi(){
     const cells = C.map(c=>{
       const co = coO(d,c.k), on = co && get(d.k,c.k);
       return co
-        ? `<button class="gc ${c.c}${on?' on':''}" onclick="set('${d.k}','${c.k}',${!on});veLuoi()">${on?(me.loai==='full'?'✓ nghỉ':'✓ rảnh'):'+'}</button>`
+        ? `<button class="gc ${c.c}${on?' on':''}" onclick="set('${d.k}','${c.k}',${!on});veLuoi()">${on?((me.loai==='full'||me.loai==='cung')?'✓ nghỉ':'✓ rảnh'):'+'}</button>`
         : `<div class="gc na">—</div>`;
     }).join('');
     return `<div class="gr" style="grid-template-columns:${cols}">
@@ -1465,10 +1469,13 @@ function tinh(){
       if(p.t){ n++; gio += GIO_CA.t; }
     }
     else if(me.loai==='lai'){ if(p.t){n++;gio+=1;} }   // Vi: chỉ ca tối là đăng ký thêm
+    else if(me.loai==='cung'){ if(p.n){n++;} }         // 12/10: Khánh — chỉ đếm ngày nghỉ
     else if(NGHI.some(k=>p[k])){ n++; if(p.n && !d.cn) caNgay.push(d.ten); }
   });
-  const full = me.loai==='full';
-  $('sendv').textContent = full ? (n?`${n} ngày nghỉ`:'Đi làm đủ tuần') : (n?`${n} ca · ${gio} giờ`:'Chưa chọn');
+  const full = me.loai==='full' || me.loai==='cung';
+  $('sendv').textContent = me.loai==='cung' ? (n?`${n} ngày nghỉ`:'Làm cứng cả tuần')
+                          : full ? (n?`${n} ngày nghỉ`:'Đi làm đủ tuần')
+                          : (n?`${n} ca · ${gio} giờ`:'Chưa chọn');
   $('sendbtn').disabled = !full && n===0;
 
   let w = '';
